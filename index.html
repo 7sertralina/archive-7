@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>body-without-soul</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --win-bg: #c0c0c0;
+            --win-border-light: #ffffff;
+            --win-border-dark: #808080;
+            --win-border-black: #000000;
+            --win-blue: #000080;
+            --win-text: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "MS Sans Serif", "Tahoma", sans-serif;
+            animation: jitter 8s infinite;
+        }
+
+        @keyframes jitter {
+            0% { transform: translate(0,0); }
+            98% { transform: translate(0,0); }
+            98.5% { transform: translate(1px, -0.5px); }
+            99% { transform: translate(-1px, 0.5px); }
+            100% { transform: translate(0,0); }
+        }
+
+        .crt-noise {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.12;
+            animation: noise-anim 0.2s steps(2) infinite;
+        }
+
+        @keyframes noise-anim {
+            0% { transform: translate(0,0); }
+            50% { transform: translate(-5%, 5%); }
+            100% { transform: translate(5%, -5%); }
+        }
+
+        .crt-scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1001;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%;
+        }
+
+        .crt-vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1002;
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .crt-static-line {
+            position: fixed;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            opacity: 0.2;
+            z-index: 1003;
+            pointer-events: none;
+            animation: scanline-move 10s linear infinite;
+        }
+
+        @keyframes scanline-move {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+
+        /* CD DESIGN */
+        .cd-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .rotating {
+            animation: rotate-cd 3s linear infinite !important;
+        }
+
+        .reverse-rotating {
+            animation: rotate-cd-reverse 3s linear infinite !important;
+        }
+
+        @keyframes rotate-cd {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotate-cd-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .slowdown {
+            animation: slowdown-anim 5s cubic-bezier(0.2, 0, 0.2, 1) forwards !important;
+        }
+
+        .slowdown-reverse {
+            animation: slowdown-anim-reverse 5s cubic-bezier(0.2, 0, 0.2, 1) forwards !important;
+        }
+
+        @keyframes slowdown-anim {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(1080deg); }
+        }
+
+        @keyframes slowdown-anim-reverse {
+            from { transform: rotate(1080deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        /* WINDOWS 98 */
+        .win98-window {
+            display: none;
+            position: absolute;
+            width: 300px;
+            background: var(--win-bg);
+            border: 1px solid var(--win-border-light);
+            box-shadow: inset 1px 1px var(--win-border-light), 1px 1px var(--win-border-black), 2px 2px var(--win-border-dark);
+            padding: 2px;
+            z-index: 2000;
+        }
+
+        .win98-title-bar {
+            background: var(--win-blue);
+            color: white;
+            padding: 3px 5px 3px 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 11px;
+            height: 18px;
+        }
+
+        .win98-btn-close {
+            width: 14px;
+            height: 14px;
+            background: var(--win-bg);
+            border: 1px solid var(--win-border-light);
+            box-shadow: inset 1px 1px var(--win-border-light), 1px 1px var(--win-border-black);
+            color: black;
+            font-size: 9px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .win98-content {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--win-text);
+        }
+
+        .win98-footer {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .win98-button {
+            padding: 4px 15px;
+            background: var(--win-bg);
+            border: 1px solid var(--win-border-light);
+            box-shadow: inset 1px 1px var(--win-border-light), 1px 1px var(--win-border-black), 2px 2px var(--win-border-dark);
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .win98-button:active {
+            box-shadow: inset 1px 1px var(--win-border-dark), 1px 1px var(--win-border-light);
+            padding: 5px 14px 3px 16px;
+        }
+
+        .overlay-darken {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 1500;
+        }
+
+        @media (max-width: 480px) {
+            .cd-container { width: 220px; height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-noise"></div>
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+    <div class="crt-static-line"></div>
+    
+    <div class="overlay-darken" id="screen-overlay"></div>
+
+    <div class="cd-container" id="cd-trigger">
+        <svg id="cd-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="48" fill="#111" />
+            <defs>
+                <radialGradient id="cdGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#222;stop-opacity:1" />
+                    <stop offset="60%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                    <stop offset="95%" style="stop-color:#000;stop-opacity:1" />
+                </radialGradient>
+                <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgba(255,255,255,0.02);stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgba(255,255,255,0.02);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="47" fill="url(#cdGradient)" stroke="#1a1a1a" stroke-width="0.2" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#0a0a0a" stroke-width="0.1" />
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#0a0a0a" stroke-width="0.1" />
+            <circle cx="50" cy="50" r="47" fill="url(#shine)" />
+            <circle cx="50" cy="50" r="15" fill="#050505" stroke="#111" stroke-width="0.5" />
+            <circle cx="50" cy="50" r="6" fill="#000" />
+            <text x="50" y="38" font-size="1.5" fill="#222" text-anchor="middle" font-family="monospace">COMPACT DISC</text>
+        </svg>
+    </div>
+
+    <div class="win98-window" id="win98">
+        <div class="win98-title-bar">
+            <div class="win98-title-text">body-without-soul</div>
+            <div class="win98-btn-close" id="btn-close">x</div>
+        </div>
+        <div class="win98-content" id="win-text">Nothing to see here. :&lt;</div>
+        <div class="win98-footer">
+            <button class="win98-button" id="btn-continue">continue</button>
+        </div>
+    </div>
+
+    <script>
+        const REDIRECT_URL = "https://discordapp.com/users/1509608098162282638";
+        
+        const cdContainer = document.getElementById('cd-trigger');
+        const win98 = document.getElementById('win98');
+        const winText = document.getElementById('win-text');
+        const overlay = document.getElementById('screen-overlay');
+        const btnContinue = document.getElementById('btn-continue');
+        const btnClose = document.getElementById('btn-close');
+
+        const audio = new Audio();
+        let isPlaying = false;
+        let isReversedMode = false;
+        let sequenceTriggered = false;
+
+        cdContainer.addEventListener('click', () => {
+            if (isPlaying) return;
+
+            const fileToPlay = isReversedMode ? "music_reverse.mp3" : "music.mp3";
+            
+            cdContainer.classList.remove('rotating', 'reverse-rotating', 'slowdown', 'slowdown-reverse');
+            void cdContainer.offsetWidth; 
+            cdContainer.classList.add(isReversedMode ? 'reverse-rotating' : 'rotating');
+
+            audio.src = fileToPlay;
+            audio.load();
+            audio.volume = 0;
+            
+            audio.play().then(() => {
+                let vol = 0;
+                let fade = setInterval(() => {
+                    vol += 0.05;
+                    if (vol >= 1) { audio.volume = 1; clearInterval(fade); }
+                    else { audio.volume = vol; }
+                }, 50);
+            }).catch(err => {
+                overlay.style.display = 'block';
+                win98.style.display = 'block';
+                winText.innerHTML = "Error: <b>" + fileToPlay + "</b> not found.<br>Make sure the file is in the same folder.";
+                win98.style.top = '50%';
+                win98.style.left = '50%';
+                win98.style.transform = 'translate(-50%, -50%)';
+            });
+
+            isPlaying = true;
+            sequenceTriggered = false;
+        });
+
+        setInterval(() => {
+            if (isPlaying && audio.duration && audio.currentTime > audio.duration - 5 && !sequenceTriggered) {
+                sequenceTriggered = true;
+                
+                let outVol = 1;
+                let fadeOut = setInterval(() => {
+                    outVol -= 0.05;
+                    if (outVol <= 0) { audio.volume = 0; audio.pause(); clearInterval(fadeOut); isPlaying = false; }
+                    else { audio.volume = outVol; }
+                }, 100);
+
+                cdContainer.classList.remove('rotating', 'reverse-rotating');
+                void cdContainer.offsetWidth; 
+                cdContainer.classList.add(isReversedMode ? 'slowdown-reverse' : 'slowdown');
+
+                setTimeout(() => {
+                    overlay.style.display = 'block';
+                    win98.style.display = 'block';
+                    
+                    if (isReversedMode) {
+                        winText.innerText = "still here? :>";
+                        btnClose.style.display = 'none'; // REMOVE O X NO MODO REVERSO
+                    } else {
+                        winText.innerText = "Nothing to see here. :<";
+                        btnClose.style.display = 'flex';
+                    }
+                    
+                    win98.style.top = '50%';
+                    win98.style.left = '50%';
+                    win98.style.transform = 'translate(-50%, -50%)';
+                }, 5000);
+            }
+        }, 500);
+
+        btnClose.addEventListener('click', () => {
+            if (!isReversedMode) {
+                win98.style.display = 'none';
+                overlay.style.display = 'none';
+                cdContainer.classList.remove('rotating', 'reverse-rotating', 'slowdown', 'slowdown-reverse');
+                cdContainer.style.transform = 'rotate(0deg)';
+                isPlaying = false;
+                isReversedMode = true; 
+                sequenceTriggered = false;
+            }
+        });
+
+        btnContinue.addEventListener('click', () => {
+            window.location.href = REDIRECT_URL;
+        });
+    </script>
+</body>
+</html>
